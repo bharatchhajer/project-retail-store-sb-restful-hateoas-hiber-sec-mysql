@@ -5,13 +5,13 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building by pulling from github...'
-                mvn clean package
+                bat 'mvn clean package'
             }
         }
         stage('Test') {
             steps {
                 echo 'Testing after pulling from github...'
-                mvn test
+                bat 'mvn test'
             }
         }
         stage('Deploy') {
