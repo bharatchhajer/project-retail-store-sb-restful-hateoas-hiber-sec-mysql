@@ -23,20 +23,28 @@ pipeline {
             }
         }
         stage('Control Application') {
+            when {
+                expression { params.ACTION == 'Start' }
+            }
             steps {
                 script {
-                    if (params.ACTION == 'Start') {
                         echo "Starting the Java Application"
                         // Run the Java app in the background
-                        bat 'start /B java -jar target/project-retail-store-sb-restful-hateoas-hiber-sec-mysql-0.0.1-SNAPSHOT.jar > app.log 2>&1 &'
-                    } else if (params.ACTION == 'Stop') {
-                        echo "Stopping the Java Application"
-                        // Stopping the application (see Stop section)
-                        bat 'taskkill /F /IM java.exe'
-                    }
+                        bat 'start /B java -jar target/project-retail-store-sb-restful-hateoas-hiber-sec-mysql-0.0.1-SNAPSHOT.jar > app.log 2>&1 & echo !%PROCESS_ID! > pid.txt' 
                 }
             }
         }
-
+        stage('Stop Application') {
+            when {
+                expression { params.ACTION == 'Stop' }
+            }
+            steps {
+                script {
+                    // Read the PID from the file and kill the process
+                    def pid = readFile('pid.txt').trim()
+                    bat "taskkill /F /PID ${pid}"
+                }
+            }
+        }
     }
 }
