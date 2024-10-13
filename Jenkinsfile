@@ -17,6 +17,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Deploying...'
+                bat 'java -jar target/project-retail-store-sb-restful-hateoas-hiber-sec-mysql-0.0.1-SNAPSHOT.jar'
             }
         }
     }
