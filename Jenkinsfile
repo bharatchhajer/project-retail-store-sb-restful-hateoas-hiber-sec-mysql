@@ -1,26 +1,48 @@
 pipeline {
     agent any
-    parameters {
-        choice(name: 'ACTION', choices: ['Start', 'Stop'], description: 'Choose Start or Stop the application')
+    options {
+        timeout(time: 15, unit: 'MINUTES') // General job timeout, not specific to Git
     }
+    environment {
+        SPRING_BOOT_REPO = 'https://github.com/bharatchhajer/project-retail-store-sb-restful-hateoas-hiber-sec-mysql.git'
+        SPRING_BOOT_DIR = 'spring-boot-app'
+    }
+
     stages {
-        stage('Build') {
+
+        stage('Build and Package Spring Boot App') {
             steps {
-                echo 'Building by pulling from github...'
-                bat 'mvn clean package'
+                script {
+                    dir("${env.SPRING_BOOT_DIR}") {
+                        // Run Maven to build the Spring Boot app
+                        echo 'Building Spring Boot App...'
+                        bat 'mvn clean package -DskipTests'
+                    }
+                }
             }
         }
-        stage('Test') {
-            steps {
-                echo 'Testing after pulling from github...'
-                bat 'mvn test'
+
+        stage('Run Both Applications') {
+            parallel {
+                stage('Run Spring Boot Backend') {
+                    steps {
+                        script {
+                            dir("${env.SPRING_BOOT_DIR}") {
+                                // Run the Spring Boot application in the background
+                                echo 'Starting Spring Boot backend...'
+                                powershell 'java -jar target/project-retail-store-sb-restful-hateoas-hiber-sec-mysql-0.0.1-SNAPSHOT.jar | Tee-Object -FilePath app-back.log'
+                            }
+                        }
+                    }
+                }
+
             }
         }
-        stage('Deploy') {
-            steps {
-                echo 'Deploying...'
-                // bat 'java -jar target/project-retail-store-sb-restful-hateoas-hiber-sec-mysql-0.0.1-SNAPSHOT.jar'
-            }
+    }
+
+    post {
+        always {
+            echo 'Pipeline finished.'
         }
     }
 }
