@@ -26,11 +26,11 @@ pipeline {
                 stage('Run Spring Boot Backend') {
                     steps {
                         script {
-                            dir("${env.SPRING_BOOT_DIR}") {
+                         //   dir("${env.SPRING_BOOT_DIR}") {
                                 // Run the Spring Boot application in the background
                                 echo 'Starting Spring Boot backend...'
                                 powershell 'java -jar target/project-retail-store-sb-restful-hateoas-hiber-sec-mysql-0.0.1-SNAPSHOT.jar | Tee-Object -FilePath app-back.log'
-                            }
+                         //   }
                         }
                     }
                 }
