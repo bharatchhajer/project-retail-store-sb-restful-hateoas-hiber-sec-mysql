@@ -5,7 +5,6 @@ pipeline {
     }
     environment {
         SPRING_BOOT_REPO = 'https://github.com/bharatchhajer/project-retail-store-sb-restful-hateoas-hiber-sec-mysql.git'
-        SPRING_BOOT_DIR = 'spring-boot-app'
     }
 
     stages {
@@ -13,11 +12,11 @@ pipeline {
         stage('Build and Package Spring Boot App') {
             steps {
                 script {
-                    dir("${env.SPRING_BOOT_DIR}") {
+                   // dir("${env.SPRING_BOOT_DIR}") {
                         // Run Maven to build the Spring Boot app
                         echo 'Building Spring Boot App...'
                         bat 'mvn clean package -DskipTests'
-                    }
+                  //  }
                 }
             }
         }
