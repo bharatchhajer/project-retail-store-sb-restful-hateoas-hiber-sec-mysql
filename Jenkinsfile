@@ -9,7 +9,7 @@ pipeline {
 
     stages {
 
-        stage('Build and Package Spring Boot App') {
+        stage('Build and Package Spring Boot Apps') {
             steps {
                 script {
                    // dir("${env.SPRING_BOOT_DIR}") {
